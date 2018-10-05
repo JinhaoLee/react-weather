@@ -17,7 +17,7 @@ export default class Forecaster extends React.Component {
     
     render() {
         let rows = this.props.days.slice(0,this.state.numDays).map(day => {
-            return <DailyItem day={day} />
+            return <DailyItem day={day} toggle={this.props.toggle}/>
         });
         return (
             <div>
@@ -39,14 +39,15 @@ export default class Forecaster extends React.Component {
 
 function DailyItem(props) {
     const day = props.day;
+    const toggle = props.toggle;
     return (
         <div className="weather-forecast__row">
             <span className="weather-forecast__day">{day.weekday}</span>
             <span className="weather-forecast__icon">
                 <img src={day.icon} alt=''/>
             </span>
-            <span className="weather-forecast__high">{day.high}</span>
-            <span className="weather-forecast__low">{day.low}</span>
+            <span className="weather-forecast__high">{toggle ? `${day.high.C} c`: `${day.high.F} f`}</span>
+            <span className="weather-forecast__low">{toggle ? `${day.low.C} c`: `${day.low.F} f`}</span>
         </div>
     );
 }

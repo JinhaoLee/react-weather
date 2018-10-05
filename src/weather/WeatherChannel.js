@@ -6,21 +6,20 @@ import {fetchConditionData,fetchForecastData} from '../api/weather';
 
 export default class WeatherChannel extends Component {
     constructor(props) {
-        super(props);
-        
+        super(props);        
         // use static data to fill initial state first
         this.state = {
             curCity: 'beijing',
             condition: {
               city:  '',
               temp: {C:'', F:''},
-              toggle: true,
               weather: '',
               humidity: '',
               wind: '',
               wind_dir: ''
             },
-            days:  []
+            days:  [],
+            toggle: true
         }
     }
     componentDidMount() {
@@ -40,7 +39,7 @@ export default class WeatherChannel extends Component {
         humidity: data.relative_humidity,
         wind: data.wind_kph,   
         wind_dir: data.wind_dir,
-        toggle: this.state.condition.toggle   
+        // toggle: this.state.condition.toggle   
       };
       this.setState({condition})
     }
@@ -48,8 +47,8 @@ export default class WeatherChannel extends Component {
     onForecastLoad(data){
       let days = data.simpleforecast.forecastday.map(day => ({ 
         weekday: day.date.weekday.slice(0, 3),
-        high: day.high.celsius,
-        low: day.low.celsius,
+        high: {C: day.high.celsius, F: day.high.fahrenheit},
+        low: {C: day.low.celsius, F: day.low.fahrenheit},
         icon: day.icon_url }));
       this.setState({days})
     }
@@ -65,9 +64,10 @@ export default class WeatherChannel extends Component {
     }
 
     tempSwitch() {
-      var condition = {...this.state.condition}
-      condition.toggle = !this.state.condition.toggle;
-      this.setState({condition});
+      // var condition = {...this.state.condition}
+      // condition.toggle = !this.state.condition.toggle;
+      var toggle = !this.state.toggle;
+      this.setState({toggle});
     }
 
     render() {
@@ -85,10 +85,10 @@ export default class WeatherChannel extends Component {
         </nav>
         <main>
           <section className='weather-condition'>
-            <CityCondition data={this.state.condition} />
+            <CityCondition data={this.state.condition} toggle={this.state.toggle}/>
           </section>
           <section className='weather-forecast'>
-            <Forecaster days={this.state.days} />
+            <Forecaster days={this.state.days} toggle={this.state.toggle}/>
           </section>
         </main>
         </React.Fragment>

@@ -4,7 +4,8 @@ import iwind from '../images/icon-wind.png';
 import icompass from '../images/icon-compass.png';
 
 export default function CityCondition(props) {
-  const {city, weather, temp, humidity, wind, wind_dir, toggle} = props.data;
+  const {city, weather, temp, humidity, wind, wind_dir} = props.data;
+  const toggle = props.toggle;
   return (
     <div>
         <div className="weather-condition__location">{city}</div>
