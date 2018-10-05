@@ -4,13 +4,13 @@ import iwind from '../images/icon-wind.png';
 import icompass from '../images/icon-compass.png';
 
 export default function CityCondition(props) {
-  const {city, weather, temp, humidity, wind, wind_dir} = props.data;
+  const {city, weather, temp, humidity, wind, wind_dir, toggle} = props.data;
   return (
     <div>
         <div className="weather-condition__location">{city}</div>
         <div style={{textAlign: 'center', fontSize: '14px'}}>{weather}</div>
         <div className="weather-condition__temp">
-        <span style={{ paddingRight: 18}}>{`${temp.C} c`}</span></div>
+        <span style={{ paddingRight: 18}}>{toggle ? `${temp.C} c`: `${temp.F} f`}</span></div>
         <div className="weather-condition__desc">
             <div>
                 <img src={umberella} alt=''/> <span className="citem">{humidity}</span>

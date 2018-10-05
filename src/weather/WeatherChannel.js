@@ -7,25 +7,24 @@ import {fetchConditionData,fetchForecastData} from '../api/weather';
 export default class WeatherChannel extends Component {
     constructor(props) {
         super(props);
+        
         // use static data to fill initial state first
         this.state = {
-            curCity: 'brisbane',
+            curCity: 'beijing',
             condition: {
-              city:  'Brisbane, Au',
-              temp: {C:'12'},
-              weather: 'Clear',
-              humidity: '70%',
-              wind: '3',
-              wind_dir: 'N'
+              city:  '',
+              temp: {C:'', F:''},
+              toggle: true,
+              weather: '',
+              humidity: '',
+              wind: '',
+              wind_dir: ''
             },
-            days:  [
-                {weekday: 'Wed', high:23, low:18, icon:'http://icons.wxug.com/i/c/k/clear.gif'},
-                {weekday: 'Thu', high:29, low:18, icon:'http://icons.wxug.com/i/c/k/chancerain.gif'},
-                {weekday: 'Fri', high:20, low:10, icon:'http://icons.wxug.com/i/c/k/chancerain.gif'},
-                {weekday: 'Thu', high:29, low:18, icon:'http://icons.wxug.com/i/c/k/chancerain.gif'},
-                {weekday: 'Fri', high:20, low:10, icon:'http://icons.wxug.com/i/c/k/chancerain.gif'}
-            ]
+            days:  []
         }
+    }
+    componentDidMount() {
+      this.handleSearch();
     }
 
     handleCityChange(event){
@@ -40,7 +39,8 @@ export default class WeatherChannel extends Component {
         weather: data.weather,
         humidity: data.relative_humidity,
         wind: data.wind_kph,   
-        wind_dir: data.wind_dir    
+        wind_dir: data.wind_dir,
+        toggle: this.state.condition.toggle   
       };
       this.setState({condition})
     }
@@ -51,14 +51,23 @@ export default class WeatherChannel extends Component {
         high: day.high.celsius,
         low: day.low.celsius,
         icon: day.icon_url }));
-      days = days.slice(0, 3);
       this.setState({days})
     }
 
     handleSearch(){
       const city = this.state.curCity;
-      fetchConditionData(city, this.onConditionalLoad.bind(this));
-      fetchForecastData(city, this.onForecastLoad.bind(this));
+      fetchConditionData(city).then(data => {
+        this.onConditionalLoad(data);
+      });
+      fetchForecastData(city).then(data => {
+        this.onForecastLoad(data);
+      });
+    }
+
+    tempSwitch() {
+      var condition = {...this.state.condition}
+      condition.toggle = !this.state.condition.toggle;
+      this.setState({condition});
     }
 
     render() {
@@ -68,7 +77,7 @@ export default class WeatherChannel extends Component {
             <div style={{flex: 1}}>
             <input className="search-input" value={this.state.curCity} onChange={this.handleCityChange.bind(this)} />
             <button className="search-btn" onClick={this.handleSearch.bind(this)}><i className="fa fa-search" /></button>
-            <button className="temp-switch">
+            <button className="temp-switch" onClick={this.tempSwitch.bind(this)}>
                 <i className="fa fa-thermometer-empty" aria-hidden="true" style={{paddingRight: 5}} />
                 C
             </button>
